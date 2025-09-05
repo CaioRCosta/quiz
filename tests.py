@@ -1,7 +1,16 @@
 import pytest
 from model import Question
 
+@pytest.fixture
+def sample_question():
 
+    question = Question(title='Qual país minha amiga Lívia está fazendo intercâmbio?')
+    question.add_choice('Bélgica', False)
+    question.add_choice('França', True)
+    question.add_choice('China', False)
+    return question
+
+# testes originais
 def test_create_question():
     question = Question(title='q1')
     assert question.id != None
@@ -98,3 +107,13 @@ def test_remove_all_choices_clears_all():
     question.remove_all_choices()
     assert len(question.choices) == 0
 
+# 2 testes
+def test_sample_question_has_correct_choice(sample_question):
+    # Verifica se pelo menos uma escolha está correta
+    correct_choices = [c for c in sample_question.choices if c.is_correct]
+    assert len(correct_choices) == 1
+    assert correct_choices[0].text == 'França'
+
+def test_sample_question_choices_count(sample_question):
+    # Verifica se a questão possui exatamente 3 escolhas
+    assert len(sample_question.choices) == 3
